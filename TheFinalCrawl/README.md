@@ -16,3 +16,7 @@ You can open in it the IDL application
 
 ### Linux
 The best way to run it is in the terminal. Just like MacOS you can use cd to get to the file than do python3 main.py
+
+
+### Other Choices
+On all 3 you can run it through Visual Studio Code
