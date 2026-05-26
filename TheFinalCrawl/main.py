@@ -673,30 +673,42 @@ passwordfact = False
 # NEW GAME
 # =========================
 def gamestart(ui: AdventureUI):
-
-    name = ui.input_str(
-        "Welcome to The Final Crawl.\n\n"
-        "Enter your character name.",
-        prompt="Name: "
-    )
-
-    if not name:
-        name = "Dante"
-
-    player = NpcAndPlayerRules.Player(name, 35)
-
-    # =========================
-    # Starter Items
-    # =========================
-    player.inventory.append(itemRules.ALL_ITEMS[0])  # Weapon
-    player.inventory.append(itemRules.ALL_ITEMS[3])  # Armor
-    player.inventory.append(itemRules.ALL_ITEMS[6])  # Healing item
-
-    player.equip_weapon(player.inventory[0])
-    player.equip_armor(player.inventory[1])
+    if passwordfact == True:
+        player = NpcAndPlayerRules.Player("Dante", 538)
+        
+        player.inventory.append(itemRules.ALL_ITEMS[74])  # Weapon
+        player.inventory.append(itemRules.ALL_ITEMS[77])  # Armor
+        for i in range(0, 21):
+        
+            player.inventory.append(itemRules.ALL_ITEMS[80])  # Healing item
+    
+        player.equip_weapon(player.inventory[0])
+        player.equip_armor(player.inventory[1])
+    else:
+        name = ui.input_str(
+            "Welcome to The Final Crawl.\n\n"
+            "Enter your character name.",
+            prompt="Name: "
+        )
+    
+        if not name:
+            name = "Dante"
+    
+        player = NpcAndPlayerRules.Player(name, 35)
+    
+        # =========================
+        # Starter Items
+        # =========================
+        player.inventory.append(itemRules.ALL_ITEMS[0])  # Weapon
+        player.inventory.append(itemRules.ALL_ITEMS[3])  # Armor
+        player.inventory.append(itemRules.ALL_ITEMS[6])  # Healing item
+    
+        player.equip_weapon(player.inventory[0])
+        player.equip_armor(player.inventory[1])
 
     # Track level-up progress
     player.completed_layers = []
+    if 
 
     ui.show_message(
         f"Welcome, {player.name}.",
@@ -763,6 +775,7 @@ def start_screen():
     with AdventureUI(title="[ The Final Crawl ]") as ui:
 
         while True:
+            passwordfact = False
 
             logo = pyfiglet.figlet_format("The Final Crawl")
 
@@ -808,12 +821,15 @@ def start_screen():
                 )
 
                 break
+
+        #admin area
             elif choice == 6:
                 password = ui.show(
                     "Please enter the password."
                 )
                 if password == "TheDevilKnowsRock":
                     passwordfact = True
+                    gamestart(ui)
                     
 
 
