@@ -668,8 +668,7 @@ Left you alive.
 
 You have entered Hell.
 """)
-
-
+passwordfact = False
 # =========================
 # NEW GAME
 # =========================
@@ -809,6 +808,13 @@ def start_screen():
                 )
 
                 break
+            elif choice == 6:
+                password = ui.show(
+                    "Please enter the password."
+                )
+                if password == "TheDevilKnowsRock":
+                    passwordfact = True
+                    
 
 
 # =========================
