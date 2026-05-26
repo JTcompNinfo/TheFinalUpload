@@ -4,8 +4,7 @@ def roll(base, variance=0.10):
     return int(base * random.uniform(1 - variance, 1 + variance))
 
 def layer_multiplier(layer: int) -> float:
-    # stronger early scaling so enemies don’t feel like paper
-    return 1.6 ** (layer - 1)
+    return 1.3 ** (layer - 1)
 
 def layer_scale(layer): 
     return 1.0 * (1.45 ** (layer - 1))
@@ -265,11 +264,11 @@ def make_l8_4(): return Enemy("Influence Manipulator", stat(345,8), stat(35,8), 
 def make_l8_5(): return Enemy("System Corruptor", stat(355,8), stat(36,8), stat(19,8))
 
 # Layer 9
-def make_l9_1(): return Enemy("Family Betrayer", stat(420,9), stat(40,9), stat(22,9))
-def make_l9_2(): return Enemy("Trusted Ally Traitor", stat(430,9), stat(41,9), stat(22,9))
-def make_l9_3(): return Enemy("Institution Insider", stat(440,9), stat(42,9), stat(23,9))
-def make_l9_4(): return Enemy("False Protector", stat(450,9), stat(43,9), stat(23,9))
-def make_l9_5(): return Enemy("System Core Betrayer", stat(470,9), stat(45,9), stat(24,9))
+def make_l9_1(): return Enemy("Family Betrayer",       420, stat(28,9), stat(14,9))
+def make_l9_2(): return Enemy("Trusted Ally Traitor",  440, stat(29,9), stat(14,9))
+def make_l9_3(): return Enemy("Institution Insider",   460, stat(30,9), stat(15,9))
+def make_l9_4(): return Enemy("False Protector",       480, stat(31,9), stat(15,9))
+def make_l9_5(): return Enemy("System Core Betrayer",  510, stat(33,9), stat(16,9))
 
 ENEMY_POOLS = {
     1: [make_l1_1, make_l1_2, make_l1_3, make_l1_4, make_l1_5],
@@ -286,47 +285,53 @@ ENEMY_POOLS = {
 # Bosses
 def make_neil(): return Boss("Neil deGrasse Tyson",
     boss_stat(180,1), boss_stat(4,1), boss_stat(6,1),
-    phases={2: {"atk": 6}, 3: {"atk": 8}}
+    phases={1: {"atk": 5}, 2: {"atk": 7}, 3: {"atk": 9}}
 )
 
 def make_jeffrey(): return Boss("Jeffrey Epstein",
     boss_stat(115,2), boss_stat(10,2), boss_stat(4,2),
-    phases={2: {"atk": 23}, 3: {"atk": 29}}
+    phases={1: {"atk": 12}, 2: {"atk": 16}, 3: {"atk": 20}}
 )
 
 def make_guy(): return Boss("Guy Fieri",
     boss_stat(88,3), boss_stat(8,3), boss_stat(3,3),
-    phases={2: {"atk": 34}, 3: {"atk": 42}}
+    phases={1: {"atk": 18}, 2: {"atk": 24}, 3: {"atk": 30}}
 )
 
 def make_elon(): return Boss("Elon Musk",
     boss_stat(67,4), boss_stat(6,4), boss_stat(3,4),
-    phases={2: {"atk": 49}, 3: {"atk": 61}}
+    phases={1: {"atk": 26}, 2: {"atk": 34}, 3: {"atk": 44}}
 )
 
 def make_kanye(): return Boss("Kanye West",
     boss_stat(50,5), boss_stat(4,5), boss_stat(2,5),
-    phases={2: {"atk": 63}, 3: {"atk": 78}}
+    phases={1: {"atk": 38}, 2: {"atk": 50}, 3: {"atk": 64}}
 )
 
 def make_alex(): return Boss("Alex Jones",
     boss_stat(37,6), boss_stat(3,6), boss_stat(2,6),
-    phases={2: {"atk": 89}, 3: {"atk": 110}}
+    phases={1: {"atk": 55}, 2: {"atk": 72}, 3: {"atk": 90}}
 )
 
 def make_oj(): return Boss("OJ Simpson",
     boss_stat(27,7), boss_stat(2,7), boss_stat(1,7),
-    phases={2: {"atk": 113}, 3: {"atk": 140}}
+    phases={1: {"atk": 75}, 2: {"atk": 95}, 3: {"atk": 118}}
 )
 
 def make_sam(): return Boss("Sam Bankman-Fried",
     boss_stat(19,8), boss_stat(2,8), boss_stat(1,8),
-    phases={2: {"atk": 213}, 3: {"atk": 267}}
+    phases={1: {"atk": 95}, 2: {"atk": 125}, 3: {"atk": 155, "dot": 15}}
 )
 
 def make_lucifer(): return Boss("Lucifer",
-    boss_stat(14,9), boss_stat(1,9), boss_stat(1,9),
-    phases={2: {"atk": 203}, 3: {"atk": 270}}
+    max_health=2800,
+    attack_power=55,
+    defense=18,
+    phases={
+        1: {"atk": 55},
+        2: {"atk": 85,  "dot": 10},
+        3: {"atk": 120, "dot": 20}
+    }
 )
 
 BOSSES = {

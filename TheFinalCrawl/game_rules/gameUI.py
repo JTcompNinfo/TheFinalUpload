@@ -144,6 +144,8 @@ class AdventureUI:
                 idx = key - ord('0')
                 if 1 <= idx <= len(choices):
                     return idx
+                elif idx > len(choices):   # allow hidden keys through
+                    return idx
 
     def show_message(self, dialogue: str, prompt: str = "[ Press any key ]"):
         """

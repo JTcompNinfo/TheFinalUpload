@@ -675,6 +675,7 @@ passwordfact = False
 def gamestart(ui: AdventureUI):
     if passwordfact == True:
         player = NpcAndPlayerRules.Player("Dante", 538)
+        player.layer = 9
         
         player.inventory.append(itemRules.ALL_ITEMS[74])  # Weapon
         player.inventory.append(itemRules.ALL_ITEMS[77])  # Armor
@@ -708,7 +709,6 @@ def gamestart(ui: AdventureUI):
 
     # Track level-up progress
     player.completed_layers = []
-    if 
 
     ui.show_message(
         f"Welcome, {player.name}.",
@@ -771,6 +771,7 @@ def loadgame(ui: AdventureUI):
 # START SCREEN
 # =========================
 def start_screen():
+    global passwordfact  
 
     with AdventureUI(title="[ The Final Crawl ]") as ui:
 
@@ -824,9 +825,7 @@ def start_screen():
 
         #admin area
             elif choice == 6:
-                password = ui.show(
-                    "Please enter the password."
-                )
+                password = ui.input_str("Enter the password.", prompt="Password: ")
                 if password == "TheDevilKnowsRock":
                     passwordfact = True
                     gamestart(ui)
