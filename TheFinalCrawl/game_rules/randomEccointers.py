@@ -117,16 +117,19 @@ def baller(ui, player):
     if choice == 1:
         ui.show_message("You walk up and grab the ball.")
         image_path = 'baller.jpeg'
+        try:
 
-        if platform.system() == 'Windows':
-            # Windows uses os.startfile
-            os.startfile(image_path)
-        elif platform.system() == 'Darwin':
-            # macOS uses the 'open' command
-            subprocess.run(['open', image_path])
-        else:
-            # Linux typically uses 'xdg-open'
-            subprocess.run(['xdg-open', image_path])
+            if platform.system() == 'Windows':
+                # Windows uses os.startfile
+                os.startfile(image_path)
+            elif platform.system() == 'Darwin':
+                # macOS uses the 'open' command
+                subprocess.run(['open', image_path])
+            else:
+                # Linux typically uses 'xdg-open'
+                subprocess.run(['xdg-open', image_path])
+        except:
+            pass
         ui.show_message("Your mind fills with infromtion of someone called Baller and the ball is now gone.")
         player.base_attack += 1
     
