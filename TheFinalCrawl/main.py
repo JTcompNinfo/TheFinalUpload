@@ -26,6 +26,9 @@ from game_rules.intors import show_layer_intro
 from game_rules.intors import show_boss_intro
 from game_rules.intors import show_post_boss_lore
 
+passwordfact = False
+passwordfact2 = False
+
 # =========================
 # INFERNO MAP
 # =========================
@@ -399,103 +402,105 @@ def deathCheck(ui, player):
 # RUN A SINGLE LAYER
 # =========================
 def run_layer(ui: AdventureUI, player):
+    if passwordfact2 == True:
+        randomEccointers.timid_soul(ui, player)
+        deathCheck(ui, player)
+    else:
+        current_layer = player.layer
+        layer_name = LAYER_NAMES[current_layer]
 
-    current_layer = player.layer
-    layer_name = LAYER_NAMES[current_layer]
+        if current_layer not in player.completed_layers:
 
-    if current_layer not in player.completed_layers:
+            hp_gain = LEVEL_HP.get(current_layer, 0)
 
-        hp_gain = LEVEL_HP.get(current_layer, 0)
+            if hp_gain > 0:
+                player.level_up(hp_gain)
 
-        if hp_gain > 0:
-            player.level_up(hp_gain)
-
-        player.completed_layers.append(current_layer)
-
-    # =========================
-    # Show map
-    # =========================
-    show_map(ui, player)
-    show_layer_intro(ui, player.layer)
-
-    # =========================
-    # Encounters
-    # =========================
-    encounters = random.randint(10, 20)
-    player.shop_number = random.randint(1, encounters)
-
-
-
-    for i in range(encounters):
-        player.encountNumbr = i
-        randomEccointers.randomEncounter(ui, player)
+            player.completed_layers.append(current_layer)
 
         # =========================
-        # Death Check
+        # Show map
+        # =========================
+        show_map(ui, player)
+        show_layer_intro(ui, player.layer)
+
+        # =========================
+        # Encounters
+        # =========================
+        encounters = random.randint(10, 20)
+        player.shop_number = random.randint(1, encounters)
+
+
+
+        for i in range(encounters):
+            player.encountNumbr = i
+            randomEccointers.randomEncounter(ui, player)
+
+            # =========================
+            # Death Check
+            # =========================
+            if deathCheck(ui, player):
+                return False
+
+        # =========================
+        # Boss Fight
+        # =========================
+        # Boss Fight
+        boss_factory = NpcAndPlayerRules.BOSSES.get(player.layer)
+        boss = boss_factory() if boss_factory else None
+        if player.layer != 9:
+            if boss is None:
+                ui.show_message(f"[ERROR] No boss defined for layer {player.layer}. Skipping.")
+            else:
+                show_boss_intro(ui, player.layer)
+                
+                randomEccointers.run_theCombat(ui, player, boss)
+        else:
+            if not puzzle(ui, player):
+                return False
+            if boss is None:
+                ui.show_message(f"[ERROR] No boss defined for layer {player.layer}. Skipping.")
+            else:
+                show_boss_intro(ui, player.layer)
+                randomEccointers.run_theCombat(ui, player, boss)
+
+        # =========================
+        # Death Check After Boss
         # =========================
         if deathCheck(ui, player):
             return False
 
-    # =========================
-    # Boss Fight
-    # =========================
-    # Boss Fight
-    boss_factory = NpcAndPlayerRules.BOSSES.get(player.layer)
-    boss = boss_factory() if boss_factory else None
-    if player.layer != 9:
-        if boss is None:
-            ui.show_message(f"[ERROR] No boss defined for layer {player.layer}. Skipping.")
-        else:
-            show_boss_intro(ui, player.layer)
-            
-            randomEccointers.run_theCombat(ui, player, boss)
-    else:
-        if not puzzle(ui, player):
+        show_post_boss_lore(ui, player.layer)
+
+        # =========================
+        # Final Layer Complete
+        # =========================
+        if current_layer >= 9:
+
+            ui.show_message(
+                "You defeated Lucifer."
+                "[ Press any key ]"
+            )
+
+            saveRules.delete_save()
+
             return False
-        if boss is None:
-            ui.show_message(f"[ERROR] No boss defined for layer {player.layer}. Skipping.")
-        else:
-            show_boss_intro(ui, player.layer)
-            randomEccointers.run_theCombat(ui, player, boss)
 
-    # =========================
-    # Death Check After Boss
-    # =========================
-    if deathCheck(ui, player):
-        return False
-
-    show_post_boss_lore(ui, player.layer)
-
-    # =========================
-    # Final Layer Complete
-    # =========================
-    if current_layer >= 9:
-
-        ui.show_message(
-            "You defeated Lucifer.\n\n"
-            "The Final Crawl is Complete.",
-            "[ Press any key ]"
+        # =========================
+        # Descend Option
+        # =========================
+        choice = ui.show(
+            f"You survived Layer {current_layer}: {layer_name}",
+            ["Descend Deeper", "Save and Exit"]
         )
 
-        saveRules.delete_save()
+        player.layer = current_layer + 1
 
-        return False
+        if choice == 2:
+            saveRules.save_game(player)
+            raise SystemExit(0)
 
-    # =========================
-    # Descend Option
-    # =========================
-    choice = ui.show(
-        f"You survived Layer {current_layer}: {layer_name}",
-        ["Descend Deeper", "Save and Exit"]
-    )
-
-    player.layer = current_layer + 1
-
-    if choice == 2:
-        saveRules.save_game(player)
-        raise SystemExit(0)
-
-    return True
+        return True
 
 
 # =========================
@@ -668,13 +673,12 @@ Left you alive.
 
 You have entered Hell.
 """)
-passwordfact = False
 # =========================
 # NEW GAME
 # =========================
 def gamestart(ui: AdventureUI):
     if passwordfact == True:
-        player = NpcAndPlayerRules.Player("Dante", 538)
+        player = NpcAndPlayerRules.Player("Dante", 638)
         player.layer = 9
         
         player.inventory.append(itemRules.ALL_ITEMS[74])  # Weapon
@@ -685,6 +689,20 @@ def gamestart(ui: AdventureUI):
     
         player.equip_weapon(player.inventory[0])
         player.equip_armor(player.inventory[1])
+    if passwordfact2 == True:
+        player = NpcAndPlayerRules.Player("Dante", 230)
+        player.layer = 9
+        
+        player.inventory.append(itemRules.ALL_ITEMS[74])  # Weapon
+        player.inventory.append(itemRules.ALL_ITEMS[77])  # Armor
+        for i in range(0, 21):
+        
+            player.inventory.append(itemRules.ALL_ITEMS[80])  # Healing item
+    
+        player.equip_weapon(player.inventory[0])
+        player.equip_armor(player.inventory[1])
+
+
     else:
         name = ui.input_str(
             "Welcome to The Final Crawl.\n\n"
@@ -772,6 +790,7 @@ def loadgame(ui: AdventureUI):
 # =========================
 def start_screen():
     global passwordfact  
+    global passwordfact2
 
     with AdventureUI(title="[ The Final Crawl ]") as ui:
 
@@ -828,6 +847,9 @@ def start_screen():
                 password = ui.input_str("Enter the password.", prompt="Password: ")
                 if password == "TheDevilKnowsRock":
                     passwordfact = True
+                    gamestart(ui)
+                elif password == "AllIKnowIsPain":
+                    passwordfact2 = True
                     gamestart(ui)
                     
 
